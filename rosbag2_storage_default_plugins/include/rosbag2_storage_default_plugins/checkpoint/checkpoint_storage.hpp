@@ -15,6 +15,8 @@
 #ifndef ROSBAG2_STORAGE_DEFAULT_PLUGINS__CHECKPOINT__CHECKPOINT_STORAGE_HPP_
 #define ROSBAG2_STORAGE_DEFAULT_PLUGINS__CHECKPOINT__CHECKPOINT_STORAGE_HPP_
 
+#include "rosbag2_storage_default_plugins/sqlite/sqlite_storage.hpp"
+
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -39,16 +41,16 @@ namespace rosbag2_storage_plugins
 {
 
 class ROSBAG2_STORAGE_DEFAULT_PLUGINS_PUBLIC CheckpointStorage
-  : public rosbag2_storage::storage_interfaces::ReadWriteInterface
+  : public SqliteStorage
 {
 public:
   CheckpointStorage();
   ~CheckpointStorage() override = default;
 
-  void open(
-    const std::string & uri,
-    rosbag2_storage::storage_interfaces::IOFlag io_flag =
-    rosbag2_storage::storage_interfaces::IOFlag::READ_WRITE) override;
+  // void open(
+  //   const std::string & uri,
+  //   rosbag2_storage::storage_interfaces::IOFlag io_flag =
+  //   rosbag2_storage::storage_interfaces::IOFlag::READ_WRITE) override;
 
   void create_topic(const rosbag2_storage::TopicMetadata & topic) override;
 

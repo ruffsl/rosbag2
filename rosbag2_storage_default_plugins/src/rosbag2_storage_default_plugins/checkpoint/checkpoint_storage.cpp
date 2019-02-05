@@ -44,46 +44,46 @@ CheckpointStorage::CheckpointStorage()
   current_message_row_(nullptr, SqliteStatementWrapper::QueryResult<>::Iterator::POSITION_END)
 {}
 
-void CheckpointStorage::open(
-  const std::string & uri, rosbag2_storage::storage_interfaces::IOFlag io_flag)
-{
-  auto metadata = is_read_only(io_flag) ?
-    load_metadata(uri) :
-    std::unique_ptr<rosbag2_storage::BagMetadata>();
-
-  if (metadata) {
-    if (metadata->relative_file_paths.empty()) {
-      throw std::runtime_error(
-              "Failed to read from bag '" + uri + "': Missing database file path in metadata");
-    }
-
-    database_name_ = metadata->relative_file_paths[0];
-  } else {
-    if (is_read_only(io_flag)) {
-      throw std::runtime_error("Failed to read from bag '" + uri + "': No metadata found.");
-    }
-
-    database_name_ = rosbag2_storage::FilesystemHelper::get_folder_name(uri) + ".db3";
-  }
-
-  std::string database_path = rosbag2_storage::FilesystemHelper::concat({uri, database_name_});
-  if (is_read_only(io_flag) && !database_exists(database_path)) {
-    throw std::runtime_error(
-            "Failed to read from bag '" + uri + "': File '" + database_name_ + "' does not exist.");
-  }
-
-  try {
-    database_ = std::make_unique<SqliteWrapper>(database_path, io_flag);
-  } catch (const SqliteException & e) {
-    throw std::runtime_error("Failed to setup storage. Error: " + std::string(e.what()));
-  }
-
-  if (!metadata) {
-    initialize();
-  }
-
-  ROSBAG2_STORAGE_DEFAULT_PLUGINS_LOG_INFO_STREAM("Opened database '" << uri << "'.");
-}
+// void CheckpointStorage::open(
+//   const std::string & uri, rosbag2_storage::storage_interfaces::IOFlag io_flag)
+// {
+//   auto metadata = is_read_only(io_flag) ?
+//     load_metadata(uri) :
+//     std::unique_ptr<rosbag2_storage::BagMetadata>();
+//
+//   if (metadata) {
+//     if (metadata->relative_file_paths.empty()) {
+//       throw std::runtime_error(
+//               "Failed to read from bag '" + uri + "': Missing database file path in metadata");
+//     }
+//
+//     database_name_ = metadata->relative_file_paths[0];
+//   } else {
+//     if (is_read_only(io_flag)) {
+//       throw std::runtime_error("Failed to read from bag '" + uri + "': No metadata found.");
+//     }
+//
+//     database_name_ = rosbag2_storage::FilesystemHelper::get_folder_name(uri) + ".db3";
+//   }
+//
+//   std::string database_path = rosbag2_storage::FilesystemHelper::concat({uri, database_name_});
+//   if (is_read_only(io_flag) && !database_exists(database_path)) {
+//     throw std::runtime_error(
+//             "Failed to read from bag '" + uri + "': File '" + database_name_ + "' does not exist.");
+//   }
+//
+//   try {
+//     database_ = std::make_unique<SqliteWrapper>(database_path, io_flag);
+//   } catch (const SqliteException & e) {
+//     throw std::runtime_error("Failed to setup storage. Error: " + std::string(e.what()));
+//   }
+//
+//   if (!metadata) {
+//     initialize();
+//   }
+//
+//   ROSBAG2_STORAGE_DEFAULT_PLUGINS_LOG_INFO_STREAM("Opened database '" << uri << "'.");
+// }
 
 void CheckpointStorage::write(std::shared_ptr<const rosbag2_storage::SerializedBagMessage> message)
 {
