@@ -20,6 +20,7 @@
 
 #include "rosbag2_storage/storage_interfaces/read_only_interface.hpp"
 #include "rosbag2_storage/storage_interfaces/read_write_interface.hpp"
+#include "rosbag2_storage/storage_interfaces/read_write_node_interface.hpp"
 
 #include "./impl/storage_factory_impl.hpp"
 
@@ -28,6 +29,7 @@ namespace rosbag2_storage
 
 using rosbag2_storage::storage_interfaces::ReadOnlyInterface;
 using rosbag2_storage::storage_interfaces::ReadWriteInterface;
+using rosbag2_storage::storage_interfaces::ReadWriteNodeInterface;
 
 StorageFactory::StorageFactory()
 : impl_(new StorageFactoryImpl())
@@ -46,5 +48,11 @@ std::shared_ptr<ReadWriteInterface> StorageFactory::open_read_write(
   const std::string & uri, const std::string & storage_id)
 {
   return impl_->open_read_write(uri, storage_id);
+}
+
+std::shared_ptr<ReadWriteNodeInterface> StorageFactory::open_read_write_node(
+  const std::string & uri, const std::string & storage_id)
+{
+  return impl_->open_read_write_node(uri, storage_id);
 }
 }  // namespace rosbag2_storage

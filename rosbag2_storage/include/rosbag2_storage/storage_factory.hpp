@@ -21,6 +21,7 @@
 
 #include "rosbag2_storage/storage_interfaces/read_only_interface.hpp"
 #include "rosbag2_storage/storage_interfaces/read_write_interface.hpp"
+#include "rosbag2_storage/storage_interfaces/read_write_node_interface.hpp"
 #include "rosbag2_storage/storage_factory_interface.hpp"
 #include "rosbag2_storage/visibility_control.hpp"
 
@@ -49,6 +50,9 @@ public:
 
   std::shared_ptr<storage_interfaces::ReadWriteInterface>
   open_read_write(const std::string & uri, const std::string & storage_id) override;
+
+  std::shared_ptr<storage_interfaces::ReadWriteNodeInterface>
+  open_read_write_node(const std::string & uri, const std::string & storage_id) override;
 
 private:
   std::unique_ptr<StorageFactoryImpl> impl_;

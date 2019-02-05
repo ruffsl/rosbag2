@@ -19,6 +19,7 @@
 #include "rosbag2_storage/storage_interfaces/base_io_interface.hpp"
 #include "rosbag2_storage/storage_interfaces/read_only_interface.hpp"
 #include "rosbag2_storage/storage_interfaces/read_write_interface.hpp"
+#include "rosbag2_storage/storage_interfaces/read_write_node_interface.hpp"
 
 namespace rosbag2_storage
 {
@@ -26,6 +27,13 @@ namespace rosbag2_storage
 template<typename T>
 struct StorageTraits
 {};
+
+template<>
+struct StorageTraits<storage_interfaces::ReadWriteNodeInterface>
+{
+  static constexpr storage_interfaces::IOFlag io_flag = storage_interfaces::IOFlag::READ_WRITE_NODE;
+  static constexpr const char * name = "rosbag2_storage::storage_interfaces::ReadWriteNodeInterface";
+};
 
 template<>
 struct StorageTraits<storage_interfaces::ReadWriteInterface>

@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSBAG2_STORAGE__STORAGE_INTERFACES__BASE_IO_INTERFACE_HPP_
-#define ROSBAG2_STORAGE__STORAGE_INTERFACES__BASE_IO_INTERFACE_HPP_
+#ifndef ROSBAG2_STORAGE__STORAGE_INTERFACES__READ_WRITE_NODE_INTERFACE_HPP_
+#define ROSBAG2_STORAGE__STORAGE_INTERFACES__READ_WRITE_NODE_INTERFACE_HPP_
 
 #include <string>
 
+#include "rclcpp/rclcpp.hpp"
+#include "rosbag2_storage/storage_interfaces/read_write_node_interface.hpp"
 #include "rosbag2_storage/visibility_control.hpp"
 
 namespace rosbag2_storage
@@ -24,23 +26,16 @@ namespace rosbag2_storage
 namespace storage_interfaces
 {
 
-enum class IOFlag : uint8_t
-{
-  READ_ONLY = 0,
-  READ_WRITE = 1,
-  APPEND = 2,
-  READ_WRITE_NODE = 3
-};
-
-class ROSBAG2_STORAGE_PUBLIC BaseIOInterface
+class ROSBAG2_STORAGE_PUBLIC ReadWriteNodeInterface
+  : public ReadWriteInterface, public rclcpp::Node
 {
 public:
-  virtual ~BaseIOInterface() = default;
+  ~ReadWriteNodeInterface() override = default;
 
-  virtual void open(const std::string & uri, IOFlag io_flag) = 0;
+  void open(const std::string & uri, IOFlag io_flag = IOFlag::READ_WRITE_NODE) override = 0;
 };
 
 }  // namespace storage_interfaces
 }  // namespace rosbag2_storage
 
-#endif  // ROSBAG2_STORAGE__STORAGE_INTERFACES__BASE_IO_INTERFACE_HPP_
+#endif  // ROSBAG2_STORAGE__STORAGE_INTERFACES__READ_WRITE_NODE_INTERFACE_HPP_

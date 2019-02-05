@@ -25,6 +25,7 @@
 
 #include "rosbag2_storage/storage_interfaces/read_only_interface.hpp"
 #include "rosbag2_storage/storage_interfaces/read_write_interface.hpp"
+#include "rosbag2_storage/storage_interfaces/read_write_node_interface.hpp"
 
 #include "rosbag2_storage/storage_factory.hpp"
 #include "rosbag2_storage/storage_traits.hpp"
@@ -35,6 +36,7 @@ namespace rosbag2_storage
 
 using storage_interfaces::ReadOnlyInterface;
 using storage_interfaces::ReadWriteInterface;
+using storage_interfaces::ReadWriteNodeInterface;
 
 template<typename InterfaceT>
 std::shared_ptr<pluginlib::ClassLoader<InterfaceT>>
@@ -87,6 +89,13 @@ public:
   StorageFactoryImpl()
   {
     try {
+      read_write_node_class_loader_ = get_class_loader<ReadWriteNodeInterface>();
+    } catch (const std::exception & e) {
+      ROSBAG2_STORAGE_LOG_ERROR_STREAM("Unable to create class load instance: " << e.what());
+      throw e;
+    }
+
+    try {
       read_write_class_loader_ = get_class_loader<ReadWriteInterface>();
     } catch (const std::exception & e) {
       ROSBAG2_STORAGE_LOG_ERROR_STREAM("Unable to create class load instance: " << e.what());
@@ -102,6 +111,19 @@ public:
   }
 
   virtual ~StorageFactoryImpl() = default;
+
+  std::shared_ptr<ReadWriteNodeInterface> open_read_write_node(
+    const std::string & uri, const std::string & storage_id)
+  {
+    auto instance = get_interface_instance(read_write_node_class_loader_, storage_id, uri);
+
+    if (instance == nullptr) {
+      ROSBAG2_STORAGE_LOG_ERROR_STREAM(
+        "Could not load/open plugin with storage id '" << storage_id << "'.");
+    }
+
+    return instance;
+  }
 
   std::shared_ptr<ReadWriteInterface> open_read_write(
     const std::string & uri, const std::string & storage_id)
@@ -136,6 +158,7 @@ public:
   }
 
 private:
+  std::shared_ptr<pluginlib::ClassLoader<ReadWriteNodeInterface>> read_write_node_class_loader_;
   std::shared_ptr<pluginlib::ClassLoader<ReadWriteInterface>> read_write_class_loader_;
   std::shared_ptr<pluginlib::ClassLoader<ReadOnlyInterface>> read_only_class_loader_;
 };

@@ -20,6 +20,7 @@
 
 #include "rosbag2_storage/storage_interfaces/read_only_interface.hpp"
 #include "rosbag2_storage/storage_interfaces/read_write_interface.hpp"
+#include "rosbag2_storage/storage_interfaces/read_write_node_interface.hpp"
 #include "rosbag2_storage/visibility_control.hpp"
 
 namespace rosbag2_storage
@@ -35,6 +36,9 @@ public:
 
   virtual std::shared_ptr<storage_interfaces::ReadWriteInterface>
   open_read_write(const std::string & uri, const std::string & storage_id) = 0;
+
+  virtual std::shared_ptr<storage_interfaces::ReadWriteNodeInterface>
+  open_read_write_node(const std::string & uri, const std::string & storage_id) = 0;
 };
 
 }  // namespace rosbag2_storage
