@@ -17,6 +17,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(pluginlib REQUIRED)
+find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
@@ -30,6 +31,7 @@ target_include_directories(rosbag2_storage PUBLIC include)
 ament_target_dependencies(
   rosbag2_storage
   pluginlib
+  rclcpp
   rcutils
   yaml_cpp_vendor)
 
