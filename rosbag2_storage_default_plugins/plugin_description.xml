@@ -6,4 +6,11 @@
   >
     <description>Plugin to write to SQLite3 databases</description>
   </class>
+  <class
+    name="checkpoint"
+    type="rosbag2_storage_plugins::CheckpointStorage"
+    base_class_type="rosbag2_storage_plugins::SqliteStorage"
+  >
+    <description>Plugin to write to Checkpoint databases</description>
+  </class>
 </library>
