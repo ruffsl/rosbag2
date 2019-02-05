@@ -26,7 +26,7 @@ class InfoVerb(VerbExtension):
         parser.add_argument(
             'bag_file', help='bag file to introspect')
         parser.add_argument(
-            '-s', '--storage', default='sqlite3',
+            '-s', '--storage', default='checkpoint',
             help='storage identifier to be used to open storage, if no yaml file exists.'
                  ' Defaults to "sqlite3"')
 

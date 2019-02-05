@@ -26,7 +26,7 @@ class PlayVerb(VerbExtension):
         parser.add_argument(
             'bag_file', help='bag file to replay')
         parser.add_argument(
-            '-s', '--storage', default='sqlite3',
+            '-s', '--storage', default='checkpoint',
             help='storage identifier to be used, defaults to "sqlite3"')
         parser.add_argument(
             '-r', '--read-ahead-queue-size', type=int, default=1000,

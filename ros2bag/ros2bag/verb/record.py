@@ -37,7 +37,7 @@ class RecordVerb(VerbExtension):
             help='destination of the bagfile to create, \
             defaults to a timestamped folder in the current directory')
         parser.add_argument(
-            '-s', '--storage', default='sqlite3',
+            '-s', '--storage', default='checkpoint',
             help='storage identifier to be used, defaults to "sqlite3"')
         parser.add_argument(
             '-f', '--serialization-format', default='',
