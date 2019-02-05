@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ROSBAG2_STORAGE_DEFAULT_PLUGINS__SQLITE__SQLITE_STORAGE_HPP_
-#define ROSBAG2_STORAGE_DEFAULT_PLUGINS__SQLITE__SQLITE_STORAGE_HPP_
+#ifndef ROSBAG2_STORAGE_DEFAULT_PLUGINS__CHECKPOINT__CHECKPOINT_STORAGE_HPP_
+#define ROSBAG2_STORAGE_DEFAULT_PLUGINS__CHECKPOINT__CHECKPOINT_STORAGE_HPP_
 
 #include <memory>
 #include <string>
@@ -38,12 +38,12 @@
 namespace rosbag2_storage_plugins
 {
 
-class ROSBAG2_STORAGE_DEFAULT_PLUGINS_PUBLIC SqliteStorage
+class ROSBAG2_STORAGE_DEFAULT_PLUGINS_PUBLIC CheckpointStorage
   : public rosbag2_storage::storage_interfaces::ReadWriteInterface
 {
 public:
-  SqliteStorage();
-  ~SqliteStorage() override = default;
+  CheckpointStorage();
+  ~CheckpointStorage() override = default;
 
   void open(
     const std::string & uri,
@@ -91,4 +91,4 @@ private:
 # pragma warning(pop)
 #endif
 
-#endif  // ROSBAG2_STORAGE_DEFAULT_PLUGINS__SQLITE__SQLITE_STORAGE_HPP_
+#endif  // ROSBAG2_STORAGE_DEFAULT_PLUGINS__CHECKPOINT__CHECKPOINT_STORAGE_HPP_

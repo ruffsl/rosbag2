@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rosbag2_storage_default_plugins/sqlite/sqlite_storage.hpp"
+#include "rosbag2_storage_default_plugins/checkpoint/checkpoint_storage.hpp"
 
 #include <sys/stat.h>
 
@@ -36,7 +36,7 @@
 namespace rosbag2_storage_plugins
 {
 
-SqliteStorage::SqliteStorage()
+CheckpointStorage::CheckpointStorage()
 : database_(),
   write_statement_(nullptr),
   read_statement_(nullptr),
@@ -44,7 +44,7 @@ SqliteStorage::SqliteStorage()
   current_message_row_(nullptr, SqliteStatementWrapper::QueryResult<>::Iterator::POSITION_END)
 {}
 
-void SqliteStorage::open(
+void CheckpointStorage::open(
   const std::string & uri, rosbag2_storage::storage_interfaces::IOFlag io_flag)
 {
   auto metadata = is_read_only(io_flag) ?
@@ -85,7 +85,7 @@ void SqliteStorage::open(
   ROSBAG2_STORAGE_DEFAULT_PLUGINS_LOG_INFO_STREAM("Opened database '" << uri << "'.");
 }
 
-void SqliteStorage::write(std::shared_ptr<const rosbag2_storage::SerializedBagMessage> message)
+void CheckpointStorage::write(std::shared_ptr<const rosbag2_storage::SerializedBagMessage> message)
 {
   if (!write_statement_) {
     prepare_for_writing();
@@ -100,7 +100,7 @@ void SqliteStorage::write(std::shared_ptr<const rosbag2_storage::SerializedBagMe
   write_statement_->execute_and_reset();
 }
 
-bool SqliteStorage::has_next()
+bool CheckpointStorage::has_next()
 {
   if (!read_statement_) {
     prepare_for_reading();
@@ -109,7 +109,7 @@ bool SqliteStorage::has_next()
   return current_message_row_ != message_result_.end();
 }
 
-std::shared_ptr<rosbag2_storage::SerializedBagMessage> SqliteStorage::read_next()
+std::shared_ptr<rosbag2_storage::SerializedBagMessage> CheckpointStorage::read_next()
 {
   if (!read_statement_) {
     prepare_for_reading();
@@ -124,7 +124,7 @@ std::shared_ptr<rosbag2_storage::SerializedBagMessage> SqliteStorage::read_next(
   return bag_message;
 }
 
-std::vector<rosbag2_storage::TopicMetadata> SqliteStorage::get_all_topics_and_types()
+std::vector<rosbag2_storage::TopicMetadata> CheckpointStorage::get_all_topics_and_types()
 {
   if (all_topics_and_types_.empty()) {
     fill_topics_and_types();
@@ -133,7 +133,7 @@ std::vector<rosbag2_storage::TopicMetadata> SqliteStorage::get_all_topics_and_ty
   return all_topics_and_types_;
 }
 
-void SqliteStorage::initialize()
+void CheckpointStorage::initialize()
 {
   std::string create_table = "CREATE TABLE topics(" \
     "id INTEGER PRIMARY KEY," \
@@ -149,7 +149,7 @@ void SqliteStorage::initialize()
   database_->prepare_statement(create_table)->execute_and_reset();
 }
 
-void SqliteStorage::create_topic(const rosbag2_storage::TopicMetadata & topic)
+void CheckpointStorage::create_topic(const rosbag2_storage::TopicMetadata & topic)
 {
   if (topics_.find(topic.name) == std::end(topics_)) {
     auto insert_topic =
@@ -161,13 +161,13 @@ void SqliteStorage::create_topic(const rosbag2_storage::TopicMetadata & topic)
   }
 }
 
-void SqliteStorage::prepare_for_writing()
+void CheckpointStorage::prepare_for_writing()
 {
   write_statement_ = database_->prepare_statement(
     "INSERT INTO messages (timestamp, topic_id, data) VALUES (?, ?, ?);");
 }
 
-void SqliteStorage::prepare_for_reading()
+void CheckpointStorage::prepare_for_reading()
 {
   read_statement_ = database_->prepare_statement(
     "SELECT data, timestamp, topics.name "
@@ -178,7 +178,7 @@ void SqliteStorage::prepare_for_reading()
   current_message_row_ = message_result_.begin();
 }
 
-void SqliteStorage::fill_topics_and_types()
+void CheckpointStorage::fill_topics_and_types()
 {
   auto statement = database_->prepare_statement(
     "SELECT name, type, serialization_format FROM topics ORDER BY id;");
@@ -190,7 +190,7 @@ void SqliteStorage::fill_topics_and_types()
   }
 }
 
-std::unique_ptr<rosbag2_storage::BagMetadata> SqliteStorage::load_metadata(const std::string & uri)
+std::unique_ptr<rosbag2_storage::BagMetadata> CheckpointStorage::load_metadata(const std::string & uri)
 {
   try {
     rosbag2_storage::MetadataIo metadata_io;
@@ -201,21 +201,21 @@ std::unique_ptr<rosbag2_storage::BagMetadata> SqliteStorage::load_metadata(const
   }
 }
 
-bool SqliteStorage::database_exists(const std::string & uri)
+bool CheckpointStorage::database_exists(const std::string & uri)
 {
   std::ifstream database(uri);
   return database.good();
 }
 
-bool SqliteStorage::is_read_only(const rosbag2_storage::storage_interfaces::IOFlag & io_flag) const
+bool CheckpointStorage::is_read_only(const rosbag2_storage::storage_interfaces::IOFlag & io_flag) const
 {
   return io_flag == rosbag2_storage::storage_interfaces::IOFlag::READ_ONLY;
 }
 
-rosbag2_storage::BagMetadata SqliteStorage::get_metadata()
+rosbag2_storage::BagMetadata CheckpointStorage::get_metadata()
 {
   rosbag2_storage::BagMetadata metadata;
-  metadata.storage_identifier = "sqlite3";
+  metadata.storage_identifier = "checkpoint";
   metadata.relative_file_paths = {database_name_};
 
   metadata.message_count = 0;
@@ -260,5 +260,5 @@ rosbag2_storage::BagMetadata SqliteStorage::get_metadata()
 }  // namespace rosbag2_storage_plugins
 
 #include "pluginlib/class_list_macros.hpp"  // NOLINT
-PLUGINLIB_EXPORT_CLASS(rosbag2_storage_plugins::SqliteStorage,
+PLUGINLIB_EXPORT_CLASS(rosbag2_storage_plugins::CheckpointStorage,
   rosbag2_storage::storage_interfaces::ReadWriteInterface)
