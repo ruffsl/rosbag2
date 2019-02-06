@@ -1,6 +1,6 @@
 FROM ros:crystal
 
-# install ROS2 dependencies
+# install build dependencies
 RUN apt-get update && apt-get install -q -y \
       build-essential \
       cmake \
@@ -10,13 +10,13 @@ RUN apt-get update && apt-get install -q -y \
       wget \
     && rm -rf /var/lib/apt/lists/*
 
-# copy ros package repo
+# copy package repo
 ENV ROS_WS /opt/ros_ws
 RUN mkdir -p $ROS_WS/src
 WORKDIR $ROS_WS
 COPY ./ src/rosbag2/
 
-# install dependency package dependencies
+# install package dependencies
 RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
     apt-get update && \
     rosdep install -q -y \
@@ -25,7 +25,7 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
       --ignore-src \
     && rm -rf /var/lib/apt/lists/*
 
-# build dependency package source
+# build package source
 ARG CMAKE_BUILD_TYPE=Release
 RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
     colcon build \
@@ -35,7 +35,7 @@ RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
       --cmake-args \
         -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
 
-# source navigation2 workspace from entrypoint
+# source workspace from entrypoint
 RUN sed --in-place \
       's|^source .*|source "$ROS_WS/install/setup.bash"|' \
       /ros_entrypoint.sh
