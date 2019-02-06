@@ -17,12 +17,15 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(pluginlib REQUIRED)
+find_package(rclcpp REQUIRED)
 find_package(rcutils REQUIRED)
 find_package(rosbag2_storage REQUIRED)
 find_package(sqlite3_vendor REQUIRED)
 find_package(SQLite3 REQUIRED)  # provided by sqlite3_vendor
+find_package(std_msgs REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
+  src/rosbag2_storage_default_plugins/checkpoint/checkpoint_node.cpp
   src/rosbag2_storage_default_plugins/checkpoint/checkpoint_storage.cpp
   src/rosbag2_storage_default_plugins/sqlite/sqlite_wrapper.cpp
   src/rosbag2_storage_default_plugins/sqlite/sqlite_storage.cpp
@@ -30,9 +33,11 @@ add_library(${PROJECT_NAME} SHARED
 
 ament_target_dependencies(${PROJECT_NAME}
   rosbag2_storage
+  rclcpp
   rcutils
   SQLite3
-  pluginlib)
+  pluginlib
+  std_msgs)
 
 target_include_directories(${PROJECT_NAME}
   PUBLIC

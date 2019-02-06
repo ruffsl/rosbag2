@@ -1,4 +1,5 @@
 // Copyright 2018, Bosch Software Innovations GmbH.
+// Copyright 2019, Ruffin White.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +25,7 @@
 #include "rosbag2_storage/storage_interfaces/read_write_interface.hpp"
 #include "rosbag2_storage/serialized_bag_message.hpp"
 #include "rosbag2_storage/topic_metadata.hpp"
+#include "rosbag2_storage_default_plugins/checkpoint/checkpoint_node.hpp"
 #include "rosbag2_storage_default_plugins/sqlite/sqlite_wrapper.hpp"
 #include "rosbag2_storage_default_plugins/visibility_control.hpp"
 
@@ -75,6 +77,7 @@ private:
   using ReadQueryResult = SqliteStatementWrapper::QueryResult<
     std::shared_ptr<rcutils_uint8_array_t>, rcutils_time_point_value_t, std::string>;
 
+  std::shared_ptr<CheckpointNode> node_;
   std::shared_ptr<SqliteWrapper> database_;
   std::string database_name_;
   SqliteStatement write_statement_;

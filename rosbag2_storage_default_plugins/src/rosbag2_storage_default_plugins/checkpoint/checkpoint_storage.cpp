@@ -1,4 +1,5 @@
 // Copyright 2018, Bosch Software Innovations GmbH.
+// Copyright 2019, Ruffin White.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +38,8 @@ namespace rosbag2_storage_plugins
 {
 
 CheckpointStorage::CheckpointStorage()
-: database_(),
+: node_(),
+  database_(),
   write_statement_(nullptr),
   read_statement_(nullptr),
   message_result_(nullptr),
