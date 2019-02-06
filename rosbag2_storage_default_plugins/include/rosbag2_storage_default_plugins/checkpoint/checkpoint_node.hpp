@@ -31,10 +31,12 @@ class ROSBAG2_STORAGE_DEFAULT_PLUGINS_PUBLIC CheckpointNode
     : public rclcpp::Node
 {
  public:
-  CheckpointNode();
+  explicit CheckpointNode(const std::string & node_name);
+  ~CheckpointNode() override = default;
+
+  void timer_callback();
 
  private:
-  void timer_callback();
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
   size_t count_;

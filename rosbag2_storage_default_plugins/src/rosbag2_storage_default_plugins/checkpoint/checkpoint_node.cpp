@@ -18,13 +18,12 @@
 namespace rosbag2_storage_plugins
 {
 
-
-CheckpointNode::CheckpointNode()
-    : Node("_rosbag2"), count_(0)
+CheckpointNode::CheckpointNode(const std::string & node_name)
+    : rclcpp::Node(node_name), count_(0)
 {
   publisher_ = this->create_publisher<std_msgs::msg::String>("topic");
-  timer_ = this->create_wall_timer(
-      500ms, std::bind(&CheckpointNode::timer_callback, this));
+//  timer_ = this->create_wall_timer(
+//      500ms, std::bind(&CheckpointNode::timer_callback, this));
 }
 
 

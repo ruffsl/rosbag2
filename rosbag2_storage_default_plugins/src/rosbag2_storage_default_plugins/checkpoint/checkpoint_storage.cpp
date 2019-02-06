@@ -44,7 +44,9 @@ CheckpointStorage::CheckpointStorage()
   read_statement_(nullptr),
   message_result_(nullptr),
   current_message_row_(nullptr, SqliteStatementWrapper::QueryResult<>::Iterator::POSITION_END)
-{}
+{
+  node_ = std::make_shared<CheckpointNode>("_rosbag2");
+}
 
 void CheckpointStorage::open(
   const std::string & uri, rosbag2_storage::storage_interfaces::IOFlag io_flag)
@@ -100,6 +102,7 @@ void CheckpointStorage::write(std::shared_ptr<const rosbag2_storage::SerializedB
 
   write_statement_->bind(message->time_stamp, topic_entry->second, message->serialized_data);
   write_statement_->execute_and_reset();
+  node_->timer_callback();
 }
 
 bool CheckpointStorage::has_next()
