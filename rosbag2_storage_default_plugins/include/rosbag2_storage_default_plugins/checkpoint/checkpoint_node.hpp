@@ -15,8 +15,6 @@
 #ifndef ROSBAG2_STORAGE_DEFAULT_PLUGINS__CHECKPOINT__CHECKPOINT_NODE_HPP_
 #define ROSBAG2_STORAGE_DEFAULT_PLUGINS__CHECKPOINT__CHECKPOINT_NODE_HPP_
 
-#include <chrono>
-
 #include "rosbag2_storage_default_plugins/visibility_control.hpp"
 
 #include "rclcpp/rclcpp.hpp"

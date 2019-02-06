@@ -22,8 +22,6 @@ CheckpointNode::CheckpointNode(const std::string & node_name)
     : rclcpp::Node(node_name), count_(0)
 {
   publisher_ = this->create_publisher<std_msgs::msg::String>("_checkpoint");
-//  timer_ = this->create_wall_timer(
-//      500ms, std::bind(&CheckpointNode::timer_callback, this));
 }
 
 void CheckpointNode::publish_checkpoint(std::shared_ptr<const rosbag2_storage::SerializedBagMessage> message)
