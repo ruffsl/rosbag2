@@ -1,4 +1,4 @@
-FROM osrf/ros2:nightly
+FROM ros:crystal
 
 # install ROS2 dependencies
 RUN apt-get update && apt-get install -q -y \
