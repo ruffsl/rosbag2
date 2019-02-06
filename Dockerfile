@@ -19,6 +19,8 @@ COPY ./ src/rosbag2/
 # install package dependencies
 RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
     apt-get update && \
+    apt-get install -y \
+      ros-$ROS_DISTRO-ros2bag && \
     rosdep install -q -y \
       --from-paths \
         src/rosbag2/rosbag2_storage_checkpoint_plugin \
