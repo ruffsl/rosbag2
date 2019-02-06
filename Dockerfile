@@ -30,8 +30,12 @@ ARG CMAKE_BUILD_TYPE=Release
 RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
     colcon build \
       --symlink-install \
-      --packages-select \
-        rosbag2_storage_checkpoint_plugin \
+      --packages-ignore $( \
+        colcon list \
+          --names-only \
+          --packages-skip \
+            rosbag2_storage_checkpoint_plugin \
+        ) \
       --cmake-args \
         -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
 
