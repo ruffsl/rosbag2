@@ -21,18 +21,18 @@ namespace rosbag2_storage_plugins
 CheckpointNode::CheckpointNode(const std::string & node_name)
     : rclcpp::Node(node_name), count_(0)
 {
-  publisher_ = this->create_publisher<std_msgs::msg::String>("topic");
+  publisher_ = this->create_publisher<std_msgs::msg::String>("_checkpoint");
 //  timer_ = this->create_wall_timer(
 //      500ms, std::bind(&CheckpointNode::timer_callback, this));
 }
 
-
-void CheckpointNode::timer_callback()
+void CheckpointNode::publish_checkpoint(std::shared_ptr<const rosbag2_storage::SerializedBagMessage> message)
 {
-  auto message = std_msgs::msg::String();
-  message.data = "Hello, world! " + std::to_string(count_++);
-  RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", message.data.c_str());
-  publisher_->publish(message);
+  auto msg = std_msgs::msg::String();
+//  message.data = "Hello, world! " + std::to_string(count_++);
+  msg.data = "Topic: " + message->topic_name + " Time: " + std::to_string(message->time_stamp);
+  RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg.data.c_str());
+  publisher_->publish(msg);
 }
 
 }  // namespace rosbag2_storage_plugins

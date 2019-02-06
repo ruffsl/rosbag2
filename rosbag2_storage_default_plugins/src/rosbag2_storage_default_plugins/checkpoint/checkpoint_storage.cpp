@@ -102,7 +102,7 @@ void CheckpointStorage::write(std::shared_ptr<const rosbag2_storage::SerializedB
 
   write_statement_->bind(message->time_stamp, topic_entry->second, message->serialized_data);
   write_statement_->execute_and_reset();
-  node_->timer_callback();
+  node_->publish_checkpoint(message);
 }
 
 bool CheckpointStorage::has_next()

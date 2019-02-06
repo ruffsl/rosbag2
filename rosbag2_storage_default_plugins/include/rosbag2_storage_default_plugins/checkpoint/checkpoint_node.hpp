@@ -22,6 +22,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
+#include "rosbag2_storage/serialized_bag_message.hpp"
+
 using namespace std::chrono_literals;
 
 namespace rosbag2_storage_plugins
@@ -34,7 +36,7 @@ class ROSBAG2_STORAGE_DEFAULT_PLUGINS_PUBLIC CheckpointNode
   explicit CheckpointNode(const std::string & node_name);
   ~CheckpointNode() override = default;
 
-  void timer_callback();
+  void publish_checkpoint(std::shared_ptr<const rosbag2_storage::SerializedBagMessage> message);
 
  private:
   rclcpp::TimerBase::SharedPtr timer_;
