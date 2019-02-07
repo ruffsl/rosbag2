@@ -148,7 +148,8 @@ void CheckpointStorage::initialize()
     "name TEXT NOT NULL," \
     "type TEXT NOT NULL," \
     "serialization_format TEXT NOT NULL,"
-    "checkpoint_nonce BLOB NOT NULL);";
+    "checkpoint_nonce BLOB NOT NULL,"
+    "checkpoint_genesis BLOB NOT NULL);";
   database_->prepare_statement(create_table)->execute_and_reset();
   create_table = "CREATE TABLE messages(" \
     "id INTEGER PRIMARY KEY," \
@@ -164,13 +165,25 @@ void CheckpointStorage::create_topic(const rosbag2_storage::TopicMetadata & topi
   if (topics_.find(topic.name) == std::end(topics_)) {
     auto insert_topic =
       database_->prepare_statement(
-      "INSERT INTO topics (name, type, serialization_format, checkpoint_nonce) VALUES (?, ?, ?, ?)");
+      "INSERT INTO topics (" \
+      "name," \
+      "type," \
+      "serialization_format," \
+      "checkpoint_nonce,"
+      "checkpoint_genesis) "\
+      "VALUES (?, ?, ?, ?, ?)");
     auto checkpoint_nonce = helper_->createNonce();
-    insert_topic->bind(topic.name, topic.type, topic.serialization_format, checkpoint_nonce);
+    auto checkpoint_genesis = helper_->computeGenesis(checkpoint_nonce, topic);
+    insert_topic->bind(
+        topic.name,
+        topic.type,
+        topic.serialization_format,
+        checkpoint_nonce,
+        checkpoint_genesis);
     insert_topic->execute_and_reset();
     CheckpointStorage::TopicInfo topic_info;
     topic_info.id = static_cast<int>(database_->get_last_insert_id());
-    topic_info.hash = checkpoint_nonce;
+    topic_info.hash = checkpoint_genesis;
     topics_.emplace(topic.name, topic_info);
   }
 }
